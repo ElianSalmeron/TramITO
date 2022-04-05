@@ -23,7 +23,6 @@ if (isset($_SESSION['username'])) {
 	       VALUES (?, ?, ?)";
 	$stmt = $conn->prepare($sql);
 	$res  = $stmt->execute([$from_id, $to_id, $message]);
-    
     # if the message inserted
     if ($res) {
     	/**
