@@ -26,6 +26,7 @@ if (isset($_SESSION['username'])) {
  $chats = getChats($_SESSION['user_id'], $chatWith['user_id'], $conn);
 
  opened($chatWith['user_id'], $conn, $chats);
+
  ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -99,7 +100,7 @@ if (!empty($chats)) {
                     <?php }
   }
  } else {?>
-               <div class="alert alert-info
+               <div id="empty_chat" class="alert alert-info
     				            text-center">
 				   <i class="fa fa-comments d-block fs-big"></i>
 	               No messages yet, Start the conversation
@@ -162,8 +163,6 @@ if (!empty($chats)) {
       every 10 sec
       **/
       setInterval(lastSeenUpdate, 10000);
-
-
 
       // auto refresh / reload
       let fechData = function(){

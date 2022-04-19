@@ -3,7 +3,8 @@
 # check if username, password, name submitted
 if(isset($_POST['username']) &&
    isset($_POST['password']) &&
-   isset($_POST['name'])){
+   isset($_POST['name']) &&
+   isset($_POST['email'])){
 
    # database connection file
    include '../db.conn.php';
@@ -12,21 +13,22 @@ if(isset($_POST['username']) &&
    $name = $_POST['name'];
    $password = $_POST['password'];
    $username = $_POST['username'];
+   $email = $_POST['email'];
 
    # making URL data format
-   $data = 'name='.$name.'&username='.$username;
+   $data = 'name='.$name.'&username='.$username.'&email='.$email;
 
    #simple form Validation
    if (empty($name)) {
    	  # error message
-   	  $em = "Name is required";
+   	  $em = "El nombre es requerido";
 
    	  # redirect to 'signup.php' and passing error message
    	  header("Location: ../../signup.php?error=$em");
    	  exit;
    }else if(empty($username)){
       # error message
-   	  $em = "Username is required";
+   	  $em = "El nombre de usuario es requerido";
 
    	  /*
     	redirect to 'signup.php' and 
@@ -34,9 +36,15 @@ if(isset($_POST['username']) &&
       */
    	  header("Location: ../../signup.php?error=$em&$data");
    	  exit;
+
+   }else if(empty($email)){
+		$em = "El correo es requerido";
+		header("Location: ../../signup.php?error=$em&$data");
+		exit;
+
    }else if(empty($password)){
    	  # error message
-   	  $em = "Password is required";
+   	  $em = "La contraseña es requerida";
 
    	  /*
     	redirect to 'signup.php' and 
@@ -70,27 +78,27 @@ if(isset($_POST['username']) &&
                # get image extension store it in var
       		   $img_ex = pathinfo($img_name, PATHINFO_EXTENSION);
 
-               /** 
+               /*
 				convert the image extension into lower case 
 				and store it in var 
-				**/
+				*/
 				$img_ex_lc = strtolower($img_ex);
 
-				/** 
+				/* 
 				crating array that stores allowed
 				to upload image extension.
-				**/
+				*/
 				$allowed_exs = array("jpg", "jpeg", "png");
 
-				/** 
+				/*
 				check if the the image extension 
 				is present in $allowed_exs array
-				**/
+				*/
 				if (in_array($img_ex_lc, $allowed_exs)) {
-					/** 
+					/* 
 					 renaming the image with user's username
 					 like: username.$img_ex_lc
-					**/
+					*/
 					$new_img_name = $username. '.'.$img_ex_lc;
 
 					# crating upload path on root directory
@@ -115,17 +123,17 @@ if(isset($_POST['username']) &&
 
       		# inserting data into database
             $sql = "INSERT INTO users
-                    (name, username, password, p_p)
-                    VALUES (?,?,?,?)";
+                    (name, username, password, p_p, email)
+                    VALUES (?,?,?,?,?)";
             $stmt = $conn->prepare($sql);
-            $stmt->execute([$name, $username, $password, $new_img_name]);
+            $stmt->execute([$name, $username, $password, $new_img_name, $email]);
       	}else {
             # inserting data into database
             $sql = "INSERT INTO users
-                    (name, username, password)
-                    VALUES (?,?,?)";
+                    (name, username, password, email)
+                    VALUES (?,?,?,?)";
             $stmt = $conn->prepare($sql);
-            $stmt->execute([$name, $username, $password]);
+            $stmt->execute([$name, $username, $password, $email]);
       	}
 
       	# success message

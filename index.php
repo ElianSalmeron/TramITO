@@ -32,7 +32,6 @@ if (!isset($_SESSION['username'])) {
 	 		           text-center">
 	 			       Login</h3>
 
-
 	 		</div>
 	 		<?php if (isset($_GET['error'])) {?>
 	 		<div class="alert alert-warning" role="alert">
@@ -63,9 +62,11 @@ if (!isset($_SESSION['username'])) {
 
 		  <button type="submit"
 		          class="btn btn-primary">
-		          LOGIN</button>
+		          Login</button>
 		  <a href="signup.php">Sign Up</a>
 		</form>
+			<br>
+			<a href="restore-password.php">¿Olvidó su contraseña?</a>
 	 </div>
 </body>
 </html>

@@ -1,33 +1,28 @@
 <?php
 session_start();
+
 if (isset($_SESSION['username'])) {
  # database connection file
  include 'app/db.conn.php';
-
  include 'app/helpers/user.php';
- include 'app/helpers/chat.php';
- include 'app/helpers/opened.php';
-
+ include 'app/helpers/conversations.php';
  include 'app/helpers/timeAgo.php';
+ include 'app/helpers/last_chat.php';
 
  # Getting User data data
- /* $chatWith = getUser('xoochbot', $conn);
+ $user = getUser($_SESSION['username'], $conn);
 
- if (empty($chatWith)) {
-  header("Location: home.php");
-  exit;
- }
+ # Getting User conversations
+ $conversations = getConversation($user['user_id'], $conn);
 
- $chats = getChats($_SESSION['user_id'], $chatWith['user_id'], $conn);
-
- opened($chatWith['user_id'], $conn, $chats);*/ 
  ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
+	<!-- PHP 7.4!!! Centos 7 OS, Maria DB 10.4.22??-->
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Home</title>
+	<title>TramITO - Login</title>
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
 	<link rel="stylesheet"
 	      href="css/style.css">
@@ -38,136 +33,137 @@ if (isset($_SESSION['username'])) {
 
 	<?php include "sections/header.php"?>
 	<!-- Encabezado -->
-	<div id class="p-5 text-center bg-light">
-		<h1 class="mb-3">TramITO</h1>
+	<div class="p-5 text-center bg-light">
+		<h1 class="mb-3">Home</h1>
 	</div>
 	<!-- Encabezado -->
 
-	<!-- ChatBot -->
 	<div class="d-flex
              justify-content-center
              align-items-center">
-    <div class="w-400 shadow p-4 rounded">
-    	   <div class="d-flex align-items-center">
-    	   	  <img src="uploads/xoochbot.png"
-    	   	       class="w-15 rounded-circle">
 
-               <h3 class="display-4 fs-sm m-2">
-               		XOOCHBOT
-               </h3>
-    	   </div>
+			 <div class="p-2 w-400
+			 rounded shadow">
+    	<div>
+    		<div class="d-flex
+    		            mb-3 p-3 bg-light
+			            justify-content-between
+			            align-items-center">
+    			<div class="d-flex
+    			            align-items-center">
+    			    <img src="uploads/<?=$user['p_p']?>"
+    			         class="w-25 rounded-circle">
+                    <h3 class="fs-xs m-2"><?=$user['name']?></h3>
+    			</div>
+    		</div>
 
-    	   <div class="shadow p-4 rounded
-    	               d-flex flex-column
-    	               mt-2 chat-box"
-    	        id="chatBox">
-    	        <?php/*
-if (!empty($chats)) {
-  foreach ($chats as $chat) {
-   if ($chat['from_id'] == $_SESSION['user_id']) {*/?>
-                    <?php /* } else { */?>
-					<p class="ltext border
-					         rounded p-2 mb-1">
-							 <?php echo '¡Hola! Soy XoochBot, bienvenido a TramITO ¿Cómo puedo ayudarte?'; ?>
-					    <small class="d-block">
-					    	<?php $fecha_actual = getdate();
-								  $hora = $fecha_actual['hours'];
-								  $minutos = $fecha_actual['minutes'];
-								  $segundos = $fecha_actual['seconds'];
-								  echo $hora.':'.$minutos.':'.$segundos; ?>
-					    </small>
-					</p>
-                    <?php /*}
-  }
- } else {*/?>
-               <!-- <div class="alert alert-info
+			<!-- Eliminar el cuadro de busqueda -->
+    		<div class="input-group mb-3">
+    			<input type="text"
+    			       placeholder="Buscar..."
+    			       id="searchText"
+    			       class="form-control">
+    			<button class="btn btn-primary"
+    			        id="serachBtn">
+    			        <i class="fa fa-search"></i>
+    			</button>
+    		</div>
+    		<ul id="chatList"
+    		    class="list-group mvh-50 overflow-auto">
+    			<?php if (!empty($conversations)) {?>
+    			    <?php
+
+  foreach ($conversations as $conversation) {?>
+	    			<li class="list-group-item">
+						<a href="chat.php?user=<?=$conversation['username']?>"
+	    				   class="d-flex
+						   justify-content-between
+						   align-items-center p-2">
+						   <div class="d-flex
+						   align-items-center">
+						   <img src="uploads/<?=$conversation['p_p']?>"
+						   class="w-10 rounded-circle">
+	    					    <h3 class="fs-xs m-2">
+									<?=$conversation['name']?><br>
+									<small>
+                        <?php
+echo lastChat($_SESSION['user_id'], $conversation['user_id'], $conn);
+   ?>
+                      </small>
+	    					    </h3>
+	    					</div>
+	    					<?php if (last_seen($conversation['last_seen']) == "Active") {?>
+		    					<div title="online">
+		    						<div class="online"></div>
+		    					</div>
+	    					<?php }?>
+	    				</a>
+	    			</li>
+    			    <?php }?>
+    			<?php } else {?>
+    				<div class="alert alert-info
     				            text-center">
-				   <i class="fa fa-comments d-block fs-big"></i>
-	               No hay mensajes aún
-			   </div>-->
-    	   	<?php /* }*/?>
-    	   </div>
-    	   <div class="input-group mb-3">
-    	   	   <textarea cols="3"
-    	   	             id="message"
-    	   	             class="form-control"></textarea>
-    	   	   <button class="btn btn-primary"
-    	   	           id="sendBtn"
-					   style="display: none;">
-    	   	   	  <i class="fa fa-paper-plane"></i>
-    	   	   </button>
-    	   </div>
-
-    </div>
+					   <i class="fa fa-comments d-block fs-big"></i>
+                       No messages yet, Start the conversation
+					</div>
+    			<?php }?>
+    		</ul>
+    	</div>
 	</div>
- 	<!-- ChatBot -->
+    </div>
 
- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
- <!-- JavaScript Bundle with Popper -->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!-- JavaScript Bundle with Popper -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 
 <script>
-	var scrollDown = function(){
-        let chatBox = document.getElementById('chatBox');
-        chatBox.scrollTop = chatBox.scrollHeight;
-	}
-
-	scrollDown();
-
 	$(document).ready(function(){
-		
-		$("#message").on("keyup", function () {
-            if($("#message").val())
-                $("#sendBtn").css("display","block");
-            else
-                $("#sendBtn").css("display","none");
-        });
 
-		// NOTA: NO SIRVE AÚN, AL DAR ENTER SE ENVÍA EL MENSAJE
-		$("#sendBtn").keypress(function (e) { 
-            var code = (e.keyCode ? e.keyCode : e.which);
-            if(code == 13 && $("#sendBtn").val() != "")
-				getResponse();
-        });
+		// Search
+		$("#searchText").on("input", function(){
+			var searchText = $(this).val();
+			if(searchText == "") return;
+         $.post('app/ajax/search.php',
+         	     {
+         	     	key: searchText
+         	     },
+         	   function(data, status){
+                  $("#chatList").html(data);
+         	   });
+       });
 
-		// Al dar click sobre el botón se envía el mensaje
-		$("#sendBtn").on("click", function (e) {
-            getResponse();
-        });
+       // Search using the button
+       $("#serachBtn").on("click", function(){
+       	 var searchText = $("#searchText").val();
+         if(searchText == "") return;
+         $.post('app/ajax/search.php',
+         	     {
+         	     	key: searchText
+         	     },
+         	   function(data, status){
+                  $("#chatList").html(data);
+         	   });
+       });
 
-		function getResponse(){
-            // Se eliminan los espacios al inicio y final del mensaje
-            $msg = $.trim($("#message").val());
-            // Se reemplazan los espacios vacíos por '%' para un mejor análisis
-            $msgUsuario = $msg.replaceAll(" ", "%")
-            // Se imprime el mensaje sin alterar
-						
-            $msgChat = '<p class="rtext align-self-end border rounded p-2 mb-1">'+ $msg +'</p>';
-            $("#chatBox").append($msgChat);
 
-            // Solicitud AJAX para obtener las respuestas
-            $.ajax({
-                url: "app/ajax/xoochbot.php",
-                type: "POST",
-                // Envío del mensaje
-                data: {mensaje: $msgUsuario},
-                // Obtención de la respuesta
-                success: function (data) {
-                    // Mostrar respuesta del bot
-                    $msgBot = '<p class="ltext border rounded p-2 mb-1">'+ data + '</p>';
-                    $("#chatBox").append($msgBot);
-					scrollDown();
-                }
-            });
-            $("#message").val("");
-            $("#sendBtn").css("display", "none");
+      /**
+      auto update last seen
+      for logged in user
+      **/
+      let lastSeenUpdate = function(){
+      	$.get("app/ajax/update_last_seen.php");
+      }
+      lastSeenUpdate();
+      /**
+      auto update last seen
+      every 10 sec
+      **/
+      setInterval(lastSeenUpdate, 10000);
 
-        }
-		
     });
-	
 </script>
- </body>
+</body>
 </html>
 <?php
 } else {
