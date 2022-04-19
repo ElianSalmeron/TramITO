@@ -5,7 +5,7 @@ $sName = "localhost";
 # user name
 $uName = "root";
 # password
-$pass = "ErSg2710";
+$pass = "";
 
 # database name
 $db_name = "tramito";
