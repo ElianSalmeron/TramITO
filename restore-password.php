@@ -21,8 +21,7 @@
              vh-100">
 	 <div class="w-400 p-5 shadow rounded">
 	 	<form method="post" 
-	 	      action="app/http/recover.php"
-	 	      enctype="multipart/form-data">
+	 	      action="app/http/recover.php">
 	 		<div class="d-flex
 	 		            justify-content-center
 	 		            align-items-center
