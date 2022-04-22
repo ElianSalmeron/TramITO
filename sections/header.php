@@ -21,14 +21,18 @@
             <a class="nav-link" aria-current="page" href="home.php">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Chatbot</a>
+            <a class="nav-link" href="chatbot.php">Chatbot</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="departamentos.php">Departamentos</a>
           </li>
           <li class="nav-item">
+            <a class="nav-link" href="update-password.php">Mi perfil</a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link" href="#">Contacto</a>
           </li>
+          
           <!-- <li class="nav-item">
             <img src="uploads/<?=$user['p_p']?>"
     			         class="w-25 rounded-circle" alt="">
