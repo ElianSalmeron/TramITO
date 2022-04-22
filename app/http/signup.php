@@ -149,3 +149,4 @@ if(isset($_POST['username']) &&
 	header("Location: ../../signup.php");
    	exit;
 }
+?>
